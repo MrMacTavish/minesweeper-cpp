@@ -26,9 +26,9 @@ std::pair<int,int> offsets[8] = {
 	{ 1,-1},//top right
 	{-1, 0},//left
 	{ 1, 0},//right
-	{-1,-1},//bottom left
-	{ 0,-1},//bottom
-	{ 1,-1} //bottom right
+	{-1, 1},//bottom left
+	{ 0, 1},//bottom
+	{ 1, 1} //bottom right
 };
 
 std::pair<int,int> index_to_coords(int i){
@@ -43,18 +43,17 @@ int coords_to_index(std::pair<int,int> c){
 
 //function to check the amount of adjacent mines
 int check_num_mines(std::array<cell,surface> b, int p){
-	int row = p % size;
-	int col = p - row * size;
-	for (int o : offsets){
-		int mines = 0;
+	int mines = 0;
+	for (std::pair<int,int> o_c : offsets){
+		int o = coords_to_index(o_c);
 		int c = p + o; //Cell to check (position + offset)
 		//check if offset even is within array bounds
 		if (c < 0 || c > surface-1){
-			std::cout << "c" << std::to_string(p)<< "." << std::to_string(c);
 			continue;
 		}
-		//std::cout << std::to_string(o);
-		//std::cout << ((b[c].mine) ? "t" : "f");
+		//std::cout << "Offset: " << std::to_string(o);
+		//std::cout << " Coord: " << std::to_string(c);
+		//std::cout << " Mine: " << ((b[c].mine) ? "t" : "f");
 		//Should be safe, check the cell
 		if (b[c].mine){
 			mines++;
@@ -72,14 +71,15 @@ void display_board(std::array<cell,surface> b){
 	for (int row = 0; row < size; row ++){
 		std::cout << std::endl <<  (char)('a' + row);
 		for (int col = 0; col < size; col++){
-			cell c = b[row*size + col];
+			int index = coords_to_index({row,col});
+			cell c = b[index];
 			if (!c.seen){	//Tile hasnt been shown, either show undis. tile or a flag
-				std::cout << ((c.flag) ? "▒" : "┏");
+				std::cout << ((c.flag) ? "┏" : "▒");
 			} else if(c.mine){	//Tile has been seen, it either is a mine, or an empty space with a number
 				std::cout << "╳";
 			} else {		//Number
 				//calculate amount of touching mines
-				int m = check_num_mines(b,row*size+col-1);
+				int m = check_num_mines(b,index);
 				std::cout << std::to_string(m);
 			}
 		}
@@ -91,14 +91,18 @@ void display_board(std::array<cell,surface> b){
 std::array<cell,surface> board;
 
 int main(){
+	for (std::pair<int,int> o : offsets){
+		std::cout << coords_to_index(o) << std::endl;
+	}
 	for (int i = 0; i < surface; i++){
 		if (i == 4){
 			board[i].seen = true;
 		} else {
+			board[i].seen = true;
 			board[i].mine = true;
 		}
 	}
-	std::cout << std::to_string(check_num_mines(board,4));
+	//std::cout << std::to_string(check_num_mines(board,4));
 	display_board(board);
 	return 0;
 }

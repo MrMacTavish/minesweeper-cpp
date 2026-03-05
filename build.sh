@@ -1,2 +1,2 @@
 mkdir bin
-g++ -o bin/minesweeper src/main.cpp src/includes/*
+g++ -o bin/minesweeper src/main.cpp 
