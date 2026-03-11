@@ -155,7 +155,28 @@ namespace board{
 		if (board[index].seen){return 1;}
 		board[index].seen = true;
 		if (board[index].mine){return 2;}
+		if (check_num_mines(board, index) == 0){
+			for (std::pair<int, int> offset : adjacent){
+				std::pair<int, int> c = {coords.first + offset.first, coords.second + offset.second};
+				if (c.first < 0 || c.second < 0 || 
+				    c.first > std::sqrt(board.size()) - 1 || 
+				    c.second > std::sqrt(board.size()) - 1 ){
+					continue;
+				}
+				dig(board, c);
+			}
+		}
 		return 0;
 	}
 
+	bool won(std::vector<cell> board){
+		bool won = true;
+		for (cell c : board){
+			if (!c.mine && !c.seen){ //Win when all non mine tiles are shown, so break when we encounter a non-visible, non-mined tile
+				won = false;
+				break;
+			}
+		}
+		return won;
+	}
 }

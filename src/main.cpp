@@ -78,6 +78,13 @@ int main(int argc, char* argv[]){
 	//PREGEN
 	std::vector<board::cell> board = board::generate(size, size * size * mines_p);
 	while (!lost){
+		//check if won
+		if (board::won(board)){
+			clear();
+			board::display(board);
+			std::cout << " You won!" << std::endl;
+			return 0;
+		}
 		//get move
 		char move = ' ';
 		while (move != 'q' && (move < '1' || move > '3')){	
