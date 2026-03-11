@@ -119,10 +119,43 @@ namespace board{
 			i = rand() %(size * size);
 			if (!board[i].mine){
 				board[i].mine = true;
-				board[i].seen = true;
 				n_mines += 1;
 			}
 		}
 		return board;
 	}
+	//MOVES
+	//+===========+============+==============+===========+
+	//| Code\Move |    flag    |    unflag    |    dig    |
+	//+===========+============+==============+===========+
+	//|     0     |   flagged  |   unflagged  |  no mine  |
+	//|	1     | can't flag | can't unflag | can't dig |
+	//|     2     |    none    |     none     |  hit mine |
+	//+===========+============+==============+===========+
+	
+	int flag(std::vector<cell>& board, std::pair<int, int> coords){
+		int index = coords_to_index(coords, std::sqrt(board.size()));
+		//check cell
+		if (board[index].seen || board[index].flag){return 1;}
+		board[index].flag = true;
+		return 0;
+	}
+
+	int unflag(std::vector<cell>& board, std::pair<int, int> coords){
+		int index = coords_to_index(coords, std::sqrt(board.size()));
+		//check cell
+		if (board[index].seen || !board[index].flag){return 1;}
+		board[index].flag = false;
+		return 0;
+	}
+	
+	int dig(std::vector<cell>& board, std::pair<int, int> coords){
+		int index = coords_to_index(coords, std::sqrt(board.size()));
+		//check cell
+		if (board[index].seen){return 1;}
+		board[index].seen = true;
+		if (board[index].mine){return 2;}
+		return 0;
+	}
+
 }
