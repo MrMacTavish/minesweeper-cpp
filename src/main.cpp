@@ -8,6 +8,7 @@
 #include <utility>
 #include <cstdlib>
 
+#include "includes/conior.h"
 #include "includes/helpmsg.h"
 #include "includes/board.h"
 //Consts TODO move to seperate file??
@@ -36,7 +37,7 @@ std::pair<int,int> parse_coords(std::string i){
 }
 
 int main(int argc, char* argv[]){
-	int width, height = 7;
+	int width = 7, height = 7;
 	float mines_p = .12;
 	//VALIDATE ARGS
 	if (argc > 1){	//width or help passed
@@ -88,12 +89,12 @@ int main(int argc, char* argv[]){
 	std::cout << "Press <RETURN> to start" << std::endl;
 	while(std::cin.get() != '\n'){}
 	//PREGEN
-	board::board board(width,height,mines_p);
+	board::Board board(width,height,mines_p);
 	while (!lost){
 		//check if won
 		if (board.won()){
 			clear();
-			board.displayi();
+			board.display();
 			std::cout << " You won!" << std::endl;
 			return 0;
 		}
@@ -103,7 +104,7 @@ int main(int argc, char* argv[]){
 			clear();
 			board.display();
 			std::cout <<	"1) Dig  2) Flag  3) Unflag  q) Quit" << std::endl;
-			move = std::cin.get();
+			move = getch();//std::cin.get();
 		}
 		if (move == 'q'){
 			return 0;
@@ -111,9 +112,10 @@ int main(int argc, char* argv[]){
 		//get pos
 		std::string i;
 		std::pair<int, int> pos = {-1, -1};
-		while (pos.first < 0 || pos.second < 0 || pos.first >= size || pos.second >= size){
+		while (pos.first < 0 || pos.second < 0 ||
+		       pos.first >= width || pos.second >= height){
 			clear();
-			board::display(board);
+			board.display();
 			std::cout << "Enter coordinates (e.x. a3): " << std::flush;
 			std::cin >> i;
 			pos = parse_coords(i);
@@ -132,6 +134,6 @@ int main(int argc, char* argv[]){
 				break;
 		}	
 	}
-	std::cout << "You lost!";
+	std::cout << " You lost!" << std::endl;
 	return 0;
 }
