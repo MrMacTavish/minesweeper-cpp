@@ -36,35 +36,47 @@ std::pair<int,int> parse_coords(std::string i){
 }
 
 int main(int argc, char* argv[]){
-	int size = 7, surface;
+	int width, height = 7;
 	float mines_p = .12;
 	//VALIDATE ARGS
-	if (argc > 1){	//size passed
+	if (argc > 1){	//width or help passed
 		if (std::string(argv[1]) == "-h"){
 			help::helpmsg();
 			return 0;
 		}
 		try{
-			size = std::stoi(argv[1]);
+			width = std::stoi(argv[1]);
 		}catch (...){
-			std::cout << "Invalid value for argument: size!" << std::endl;
+			std::cout << "Invalid value for argument width: Not an integer!" << std::endl;
 			return 1;
 		}
-		if (size < 5 || size > 11){
-			std::cout << "Invalid value for argument: size!" << std::endl;
+		if (width < 5 || width > 20){
+			std::cout << "Invalid value for argument width: Out of bounds (5-20)!" << std::endl;
 			return 1;
 		}
 	}
-	surface = size * size;
-	if (argc > 2){	//mines_p passed
+	height = width; //If height isn't specified, default to a square board
+	if (argc > 2){	//height passed
 		try{
-			mines_p = std::stoi(argv[1]);
+			height = std::stoi(argv[2]);
 		}catch (...){
-			std::cout << "Invalid value for argument: mines_p! Not an interger!" << std::endl;
+			std::cout << "Invalid value for argument height: Not an interger!" << std::endl;
+			return 1;
+		}
+		if (height < 5 || height > 20){
+			std::cout << "Invalid value for argument height: Out of bounds (5-20)!" << std::endl;
+			return 1;
+		}
+	}
+	if (argc > 3){ //mines_p passed
+		try{
+			mines_p = std::stoi(argv[3]);
+		}catch (...){
+			std::cout << "Invalid value for argument mines_p: Not an integer!" << std::endl;
 			return 1;
 		}
 		if (mines_p < 10 || mines_p > 90){
-			std::cout << "Invalid value for argument: mines_p! invalid bounds!" << std::endl;
+			std::cout << "Invalid value for argument mines_p: Out of bounds (10-0-)!" << std::endl;
 			return 1;
 		}
 		mines_p /= 100;
@@ -76,12 +88,12 @@ int main(int argc, char* argv[]){
 	std::cout << "Press <RETURN> to start" << std::endl;
 	while(std::cin.get() != '\n'){}
 	//PREGEN
-	std::vector<board::cell> board = board::generate(size, size * size * mines_p);
+	board::board board(width,height,mines_p);
 	while (!lost){
 		//check if won
-		if (board::won(board)){
+		if (board.won()){
 			clear();
-			board::display(board);
+			board.displayi();
 			std::cout << " You won!" << std::endl;
 			return 0;
 		}
@@ -89,13 +101,8 @@ int main(int argc, char* argv[]){
 		char move = ' ';
 		while (move != 'q' && (move < '1' || move > '3')){	
 			clear();
-			board::display(board);
-			std::cout <<	" Moves:"	<< std::endl <<
-			 	   	"--------" 	<< std::endl <<
-			    		"1) Dig"   	<< std::endl <<
-			     		"2) Flag" 	<< std::endl <<
-					"3) Unflag"	<< std::endl <<
-					"q) Quit"	<< std::endl;
+			board.display();
+			std::cout <<	"1) Dig  2) Flag  3) Unflag  q) Quit" << std::endl;
 			move = std::cin.get();
 		}
 		if (move == 'q'){
@@ -114,14 +121,14 @@ int main(int argc, char* argv[]){
 		int res = -1;
 		switch (move){
 			case '1':
-				res = board::dig(board,pos);
+				res = board.dig(pos);
 				if (res == 2){lost = true;}
 				break;
 			case '2':
-				res = board::flag(board,pos);
+				res = board.flag(pos);
 				break;
 			case '3':
-				res = board::unflag(board,pos);
+				res = board.unflag(pos);
 				break;
 		}	
 	}
