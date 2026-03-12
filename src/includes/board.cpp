@@ -149,12 +149,24 @@ namespace board{
 		return 0;
 	}
 	
-	int dig(std::vector<cell>& board, std::pair<int, int> coords){
+	int dig(std::vector<cell>& board, std::pair<int, int> coords,bool first){
 		int index = coords_to_index(coords, std::sqrt(board.size()));
 		//check cell
 		if (board[index].seen){return 1;}
 		board[index].seen = true;
-		if (board[index].mine){return 2;}
+		if (board[index].mine){
+			if (first){
+				for (cell c : board){
+					if (!c.mine && !c.seen){
+						c.mine = true;
+						break;
+					}
+				}
+				board[index].mine = false;
+			} else {
+				return 2;
+			}
+		}
 		if (check_num_mines(board, index) == 0){
 			for (std::pair<int, int> offset : adjacent){
 				std::pair<int, int> c = {coords.first + offset.first, coords.second + offset.second};

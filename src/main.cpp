@@ -14,6 +14,7 @@
 const std::string SPLASH = "8b    d8  88  88b 88  888888  .dP\"Y8  88    88  888888  888888  88\"\"Yb  888888  88\"\"Yb\n88b  d88  88  88Yb88  88__    `Ybo.\"  88/pq\\88  88__    88__    88__dP  88__    88__dP\n88ybdP88  88  88 Y88  88\"\"    0.`Y8b  88p  q88  88\"\"    88\"\"    88\"\"    88\"\"    88\"Yb\n88 YY 88  88  88  Y8  888888  8bodP\'  8p    q8  888888  888888  88      888888  88  Yb";
 
 bool lost = false;
+bool first = true;
 
 void clear(){
 	for(int i = 0; i < 500; i++){
@@ -114,7 +115,8 @@ int main(int argc, char* argv[]){
 		int res = -1;
 		switch (move){
 			case '1':
-				res = board::dig(board,pos);
+				res = board::dig(board,pos,first);
+				first = false;
 				if (res == 2){lost = true;}
 				break;
 			case '2':

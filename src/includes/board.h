@@ -18,7 +18,7 @@ namespace board{
 	std::vector<cell> generate(int size, int mines);
 	int flag(std::vector<cell>& board, std::pair<int, int> coords);
 	int unflag(std::vector<cell>& board, std::pair<int, int> coords);
-	int dig(std::vector<cell>& board, std::pair<int, int> coords);
+	int dig(std::vector<cell>& board, std::pair<int, int> coords, bool first = false);
 	bool won(std::vector<cell> board);
 }
 #endif
