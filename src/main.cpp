@@ -58,7 +58,7 @@ int main(int argc, char* argv[]){
 	surface = size * size;
 	if (argc > 2){	//mines_p passed
 		try{
-			mines_p = std::stoi(argv[1]);
+			mines_p = std::stoi(argv[2]);
 		}catch (...){
 			std::cout << "Invalid value for argument: mines_p! Not an interger!" << std::endl;
 			return 1;
