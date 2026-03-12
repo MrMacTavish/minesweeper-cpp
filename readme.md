@@ -33,5 +33,5 @@ Run `./build.sh`, this will create a folder `bin` with the compiled program usin
 
 ## Todo
 - [ ] Support for non-square board sizes
-- [ ] First move should always be safe (move mine should the first move hit one)
+- [x] First move should always be safe (move mine should the first move hit one)
 - [ ] Better comments
